@@ -42,6 +42,13 @@ public class BookController {
     return ResponseEntity.ok(bookService.getBookStatus(id));
   }
 
+  @Operation(summary = "전체 도서 목록")
+  @ApiResponse(responseCode = "200", description = "Ok")
+  @GetMapping("")
+  public ResponseEntity<List<BookSearchRequest>> getAllBookList() {
+    return ResponseEntity.ok(bookService.getAllBookList());
+  }
+
   @Operation(summary = "도서 수정")
   @ApiResponse(responseCode = "200", description = "Ok")
   @PutMapping("/{id}")

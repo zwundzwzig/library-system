@@ -38,15 +38,15 @@ public class BookService {
   }
 
   @Transactional(readOnly = true)
-  void checkDuplicatedBookTitle(String title) {
-    bookRepository.findByTitle(title).ifPresent(book -> {
-      throw new DataIntegrityViolationException("이미 존재하는 도서 이름이에요!");
+  void checkDuplicatedBookTitleAndAuthor(String title, String author) {
+    bookRepository.findByTitleAndAuthor(title, author).ifPresent(book -> {
+      throw new DataIntegrityViolationException("이미 존재하는 도서 정보에요!");
     });
   }
 
   @Transactional
   public BookIdResponse create(BookCreateRequest request) {
-    checkDuplicatedBookTitle(request.getTitle());
+    checkDuplicatedBookTitleAndAuthor(request.getTitle(), request.getAuthor());
 
     Book book = request.toEntity();
     Book response = bookRepository.save(book);
@@ -120,5 +120,9 @@ public class BookService {
     book.setStatus(BookStatus.AVAILABLE);
     loan.setStatus(BookStatus.FINISH);
     return new LoanResultResponse(true);
+  }
+
+  public List<BookSearchRequest> getAllBookList() {
+    return bookRepository.findAll().stream().map(Book::toResponse).toList();
   }
 }

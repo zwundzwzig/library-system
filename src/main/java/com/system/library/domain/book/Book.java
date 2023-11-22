@@ -4,6 +4,7 @@ import com.system.library.domain.auditing.BaseTimeEntity;
 import com.system.library.domain.converter.StringToUuidConverter;
 import com.system.library.domain.image.Image;
 import com.system.library.domain.loan.Loan;
+import com.system.library.web.dto.book.request.BookSearchRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -52,4 +53,16 @@ public class Book extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   @Setter
   private BookStatus status;
+
+  public BookSearchRequest toResponse() {
+    return BookSearchRequest.builder()
+            .id(id.toString())
+            .title(title)
+            .status(status.getStatus())
+            .author(author)
+            .images(!images.isEmpty()
+                    ? images.stream().map(Image::getUrl).toList()
+                    : null)
+            .build();
+  }
 }
