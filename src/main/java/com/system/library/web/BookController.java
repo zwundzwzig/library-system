@@ -7,6 +7,8 @@ import com.system.library.web.dto.book.request.BookSearchRequest;
 import com.system.library.web.dto.loan.LoanInfoRequest;
 import com.system.library.web.dto.loan.LoanHistoryInfo;
 import com.system.library.web.dto.loan.LoanResultResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import java.util.List;
 public class BookController {
   private final BookService bookService;
 
+  @Operation(summary = "도서 등록")
+  @ApiResponse(responseCode = "201", description = "Created")
   @PostMapping("")
   public ResponseEntity<BookIdResponse> createBook(@RequestPart(value = "images", required = false) List<MultipartFile> files,
                                                    @RequestPart("request") BookCreateRequest request
@@ -31,11 +35,15 @@ public class BookController {
     return ResponseEntity.ok(response);
   }
 
+  @Operation(summary = "도서 대출 이력 확인")
+  @ApiResponse(responseCode = "200", description = "Ok")
   @GetMapping("/{id}")
   public ResponseEntity<BookSearchRequest> getBookStatus(@PathVariable String id) {
     return ResponseEntity.ok(bookService.getBookStatus(id));
   }
 
+  @Operation(summary = "도서 수정")
+  @ApiResponse(responseCode = "200", description = "Ok")
   @PutMapping("/{id}")
   public ResponseEntity<BookIdResponse> update(
           @PathVariable String id,
@@ -47,6 +55,8 @@ public class BookController {
     return ResponseEntity.ok(response);
   }
 
+  @Operation(summary = "도서 대출")
+  @ApiResponse(responseCode = "201", description = "Created")
   @PostMapping("/checkout/{bookSeq}")
   public ResponseEntity<LoanHistoryInfo> checkoutBook(HttpServletRequest httpServletRequest, @PathVariable String bookSeq) {
     LoanInfoRequest request = LoanInfoRequest.builder()
@@ -57,6 +67,8 @@ public class BookController {
     return ResponseEntity.ok(response);
   }
 
+  @Operation(summary = "도서 반납")
+  @ApiResponse(responseCode = "200", description = "Ok")
   @PutMapping("/return/{bookSeq}")
   public ResponseEntity<LoanResultResponse> returnBook(HttpServletRequest httpServletRequest, @PathVariable String bookSeq) {
     LoanInfoRequest request = LoanInfoRequest.builder()

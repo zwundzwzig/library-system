@@ -25,6 +25,7 @@ public class ImageService {
   private final S3Upload s3Upload;
   private final ImageRepository imageRepository;
   private final String DIRECTORY_NAME = "book_image";
+
   @Async
   @Transactional
   public String uploadS3Image(MultipartFile file, String directory) throws IOException {

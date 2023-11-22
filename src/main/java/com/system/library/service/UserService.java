@@ -21,13 +21,6 @@ public class UserService {
   private final UserRepository userRepository;
 
   @Transactional(readOnly = true)
-  public UserSimpleCheckResponse isEmailExists(String email) {
-    Optional<User> user = userRepository.findByEmail(email);
-    user.orElseThrow(() -> new NoResultException("해당 이메일을 가진 사용자는 없어요"));
-    return new UserSimpleCheckResponse(user.isPresent());
-  }
-
-  @Transactional(readOnly = true)
   public UserSimpleCheckResponse isNicknameExists(String nickname) {
     Optional<User> user = userRepository.findByNickname(nickname);
     user.orElseThrow(() -> new NoResultException("해당 닉네임을 가진 사용자는 없어요"));
@@ -49,10 +42,11 @@ public class UserService {
       throw new DataIntegrityViolationException("이미 존재하는 닉네임입니다.");
     }
 
-    User user = userRepository.save(request.toEntity());
+    userRepository.save(request.toEntity());
     return new UserNicknameResponse(request.getNickname());
   }
 
+  @Transactional(readOnly = true)
   public HttpHeaders signIn(UserCheckRequest request) {
     Optional<User> user = userRepository.findByEmail(request.getEmail());
 
@@ -65,6 +59,7 @@ public class UserService {
 
   public void signOut(String id) {
     HttpHeaders headers = new HttpHeaders();
+    findById(id);
     headers.remove("Authorization");
   }
 

@@ -38,13 +38,6 @@ public class BookService {
   }
 
   @Transactional(readOnly = true)
-  public BookIdResponse findByTitleAndAuthor(String title, String author) {
-    Optional<Book> book = Optional.ofNullable(bookRepository.findByTitleAndAuthor(title, author)
-            .orElseThrow(() -> new NoResultException("해당 정보를 가진 도서는 존재하지 않아요.")));
-    return new BookIdResponse(book.get().getId().toString());
-  }
-
-  @Transactional(readOnly = true)
   void checkDuplicatedBookTitle(String title) {
     bookRepository.findByTitle(title).ifPresent(book -> {
       throw new DataIntegrityViolationException("이미 존재하는 도서 이름이에요!");
@@ -93,6 +86,7 @@ public class BookService {
     return response;
   }
 
+  @Transactional(readOnly = true)
   public List<LoanHistoryInfo> getHistoryInfoListByBook(Book book) {
     List<Loan> loanList = loanRepository.findAllByBook(book);
     return loanList.stream().map(Loan::toResponse).toList();
