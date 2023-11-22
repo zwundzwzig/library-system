@@ -17,6 +17,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "books")
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
